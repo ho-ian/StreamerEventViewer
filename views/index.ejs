@@ -1,9 +1,9 @@
-<% if (!access) { %>
+<% if (!code) { %>
 	<h2>You are not logged in, please login <a href="/auth/twitchtv">here</a></h2>
 <% } else { %>
 	<form action="" method="POST">
 		<label for="">Enter Your Favourite Twitch Streamer: </label>
-		<input id="username" type="text" name="name" placeholder="placeholder">
+		<input id="username" type="text" name="name" placeholder="">
 		<input type="submit">
 	</form>
 <% } %>

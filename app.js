@@ -1,6 +1,5 @@
 var express = require('express');
 var passport = require('passport');
-var util = require('util');
 var axios = require('axios');
 var path = require('path');
 var TwitchtvStrategy = require('passport-twitchtv').Strategy;
@@ -21,7 +20,7 @@ passport.use(new TwitchtvStrategy({
     clientID: TWITCHTV_CLIENT_ID,
     clientSecret: TWITCHTV_CLIENT_SECRET,
     callbackURL: "http://localhost/auth/twitchtv/callback",
-    scope: "user_read"
+    scope: "channel_read user:read:email"
     },
     function(accessToken, refreshToken, profile, done) {
         process.nextTick(function () {
@@ -30,8 +29,53 @@ passport.use(new TwitchtvStrategy({
         }
 ));
 
-var initiateListener = function(accessToken, streamer) {
-    // using access token, set user's fav streamer and follow all activity in background
+var initiateListener = function(oAuthToken, streamer) {
+    //use get users https://dev.twitch.tv/docs/api/reference/#get-users to find streamer id
+    console.log("Streamer Info");
+    console.log("================================");
+    axios({
+        method: 'get',
+        url: `https://api.twitch.tv/helix/users?login=${streamer}`,
+        headers: {
+            'Client-ID': `${TWITCHTV_CLIENT_ID}`
+        }
+    }).then((response) => {
+        var streamerID = response.data.data[0].id;
+        console.log(response.data.data[0]);
+
+        // use streamer id to lookup channel info
+        
+        axios({
+            method:'get',
+            url: `https://api.twitch.tv/kraken/channels/${streamerID}`,
+            headers: {
+                'Accept': `application/vnd.twitchtv.v5+json`,
+                'Client-ID': `${TWITCHTV_CLIENT_ID}`,
+                'Authorization': `OAuth ${oAuthToken}`
+            }
+        }).then((response) => {
+            console.log("Channel Info");
+            console.log("================================");
+            console.log(response.data);
+        })
+
+        // use streamer id to lookup stream info
+        
+        axios({
+            method:'get',
+            url: `https://api.twitch.tv/kraken/streams/${streamerID}`,
+            headers: {
+                'Accept': `application/vnd.twitchtv.v5+json`,
+                'Client-ID': `${TWITCHTV_CLIENT_ID}`
+            }
+        }).then((response) => {
+            console.log("Stream Info");
+            console.log("================================");
+            console.log(response.data);
+        })
+
+    });
+
 }
 
 
@@ -43,13 +87,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function(req, res){
-    console.log(req.query.accessToken);
-    res.render('index.ejs', { access: req.query.accessToken });
+    res.render('index.ejs', { code: req.query.code });
 });
 
 app.post('/', function(req,res) {
-    console.log(req.body.name);
-    initiateListener();
+    initiateListener(req.query.code, req.body.name);
     res.redirect('/embedded');  //redirect to embedded page, where the streamers info will be pulled via twitch api
 });
 
@@ -63,16 +105,9 @@ app.get('/auth/twitchtv',
     function(req, res){
 });
 
-app.get('/auth/twitchtv/callback', 
-    function(req, res) {
-        const requestToken = req.query.code;
-        axios({
-            method: 'post',
-            url: `https://id.twitch.tv/oauth2/token?client_id=${TWITCHTV_CLIENT_ID}&client_secret=${TWITCHTV_CLIENT_SECRET}&code=${requestToken}&grant_type=authorization_code&redirect_uri=http://localhost/auth/twitchtv/callback`
-        }).then((response) => {
-            const accessToken = response.data.access_token;
-            res.redirect(`/?accessToken=${accessToken}`);
-    })
+app.get('/auth/twitchtv/callback', function(req, res) {
+    const requestToken = req.query.code;
+    res.redirect(`/?code=${requestToken}`);
 });
 
 app.get('/logout', function(req, res){
