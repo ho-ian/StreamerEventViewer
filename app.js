@@ -92,11 +92,15 @@ app.get('/', function(req, res){
 
 app.post('/', function(req,res) {
     initiateListener(req.query.code, req.body.name);
-    res.redirect('/embedded');  //redirect to embedded page, where the streamers info will be pulled via twitch api
+    res.redirect(`/embedded?streamer=${req.body.name}`);  //redirect to embedded page, where the streamers info will be pulled via twitch api
 });
 
 app.get('/account', ensureAuthenticated, function(req, res){
     res.render('account.ejs', { user: req.user });
+});
+
+app.get('/embedded', function(req,res) {
+    res.render('embedded.ejs', {streamer: req.query.streamer});
 });
 
 

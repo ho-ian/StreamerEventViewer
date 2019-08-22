@@ -1,0 +1,13 @@
+<div id="twitch-embed" style="position:center"></div>
+
+<script src="https://embed.twitch.tv/embed/v1.js"></script>
+
+<script type="text/javascript">
+    var streamer = "<%=streamer%>";
+    console.log(streamer);
+    new Twitch.Embed("twitch-embed", {
+        width: 1880,
+        height: 960,
+        channel: streamer
+    });
+</script>
