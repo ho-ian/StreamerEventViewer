@@ -22,7 +22,7 @@ In order to scale this application to handle more and more requests, I would say
 reduce the number of API calls and to keep track of people's favourite streamers better. 
 
 ### Examples
-![Landing Page]()
-![Set Favourite Streamer]()
-![Embedded Page]()
-![Backend Listener]()
+![Landing Page](https://github.com/ho-ian/StreamerEventViewer/blob/master/screenshots/landing_page.png)
+![Set Favourite Streamer](https://github.com/ho-ian/StreamerEventViewer/blob/master/screenshots/fav_streamer.png)
+![Embedded Page](https://github.com/ho-ian/StreamerEventViewer/blob/master/screenshots/embedded.png)
+![Backend Listener](https://github.com/ho-ian/StreamerEventViewer/blob/master/screenshots/backend.png)
