@@ -15,7 +15,6 @@ passport.deserializeUser(function(obj, done) {
     done(null, obj);
 });
 
-
 passport.use(new TwitchtvStrategy({
     clientID: TWITCHTV_CLIENT_ID,
     clientSecret: TWITCHTV_CLIENT_SECRET,
@@ -95,10 +94,6 @@ app.post('/', function(req,res) {
     res.redirect(`/embedded?streamer=${req.body.name}`);  //redirect to embedded page, where the streamers info will be pulled via twitch api
 });
 
-app.get('/account', ensureAuthenticated, function(req, res){
-    res.render('account.ejs', { user: req.user });
-});
-
 app.get('/embedded', function(req,res) {
     res.render('embedded.ejs', {streamer: req.query.streamer});
 });
@@ -120,8 +115,3 @@ app.get('/logout', function(req, res){
 });
 
 app.listen(80);
-
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) { return next(); }
-    res.redirect('/login')
-}
