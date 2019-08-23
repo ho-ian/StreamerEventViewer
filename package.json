@@ -5,12 +5,12 @@
   "requires": true,
   "lockfileVersion": 1,
   "dependencies": {
-    "express":"*",
-    "passport":"*",
-    "axios":"*",
-    "path":"*",
-    "passport-twitchtv":"*",
-    "ejs":"*"
+    "express": "*",
+    "passport": "*",
+    "axios": "*",
+    "path": "*",
+    "passport-twitchtv": "*",
+    "ejs": "*"
   },
   "name": "streamereventviewer",
   "description": "I created a web application that requires authentication to Twitch before setting their favourite streamer which initiates a backend event listener\r for all of the streamer's events. It then redirects the authorized user to a page containing an embedded viewer of the Twitch streamer.",
