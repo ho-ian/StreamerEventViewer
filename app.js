@@ -18,7 +18,7 @@ passport.deserializeUser(function(obj, done) {
 passport.use(new TwitchtvStrategy({
     clientID: TWITCHTV_CLIENT_ID,
     clientSecret: TWITCHTV_CLIENT_SECRET,
-    callbackURL: "http://localhost/auth/twitchtv/callback",
+    callbackURL: "https://hoian96-streamereventviewer.herokuapp.com/auth/twitchtv/callback",
     scope: "channel_read user:read:email"
     },
     function(accessToken, refreshToken, profile, done) {
